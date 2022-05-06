@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_delete"
+        android:icon="@drawable/ic_bin"
+        android:title="Xóa"
+        />
+
+    <item
+        android:id="@+id/nav_look"
+        android:icon="@drawable/ic_look"
+        android:title="Xem trước báo thức"
+        />
+
+    <item
+        android:id="@+id/nav_skip"
+        android:icon="@drawable/ic_next"
+        android:title="Bỏ qua báo thức tiếp theo"
+        />
+
+    <item
+        android:id="@+id/nav_copy"
+        android:icon="@drawable/ic_copy"
+        android:title="Sao chép báo thức"
+        />
+</menu>

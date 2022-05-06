@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/add_fast_alarm_sheet"
+    android:layout_margin="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/fast_alarm"
+        android:gravity="center"
+        android:fontFamily="@font/lexend_semi_bold"
+        android:theme="@style/bold_text"
+        android:textSize="25sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ 00 : 00"
+        android:gravity="center"
+        android:fontFamily="@font/lexend_semi_bold"
+        android:theme="@style/bold_text"
+        android:textSize="45sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginTop="15dp"
+        android:layout_marginHorizontal="15dp">
+
+        <Button
+            android:id="@+id/add60min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add60min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+        <Button
+            android:id="@+id/add30min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add30min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+        <Button
+            android:id="@+id/add15min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add15min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginBottom="15dp"
+        android:layout_marginHorizontal="15dp">
+
+        <Button
+            android:id="@+id/add10min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add10min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+        <Button
+            android:id="@+id/add5min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add5min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+        <Button
+            android:id="@+id/add1min"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="3dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add1min"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/add_min_btn"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="8"
+        android:layout_marginHorizontal="10dp"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:src="@drawable/ic_volume"/>
+
+        <com.google.android.material.slider.Slider
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/volume_slider"
+            android:layout_weight="7"
+            android:valueFrom="0.0"
+            android:valueTo="100.0"
+            app:thumbRadius="5dp"
+            app:trackHeight="1dp"
+            app:thumbColor="@color/dayBtn"
+            app:trackColor="@color/dayBtn"/>
+
+        <ImageView
+            android:id="@+id/play_ring_tone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play"
+            app:tint="#676E80"/>
+
+        <View style="@style/Divider.Vertical"
+            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="15dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_phone_vibration"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="15dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/ic_reload"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:backgroundTint="@color/add_min_btn"
+            app:iconTint="@color/black"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:layout_gravity="bottom"
+            android:text="@string/save"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:backgroundTint="@color/red"
+            android:padding="25dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

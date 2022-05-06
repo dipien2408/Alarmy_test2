@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">Alarmy_test2</string>
+    <string name="next_alarm">Báo thức tiếp theo</string>
+    <string name="alarm_date">Các ngày làm việc</string>
+    <string name="no_alarm_on">Không có báo thức sắp tới</string>
+    <string name="alarm">Báo thức</string>
+    <string name="fast_alarm">Báo thức nhanh</string>
+    <string name="example_alarm_clock">6:30</string>
+    <string name="preview">Xem trước</string>
+    <string name="alarm_label">Tôi không nên...</string>
+    <string name="loop">Lặp lại</string>
+    <string name="all_day">Hằng ngày</string>
+    <!--for day btn in add alarm-->
+    <string name="sunday">CN</string>
+    <string name="monday">T2</string>
+    <string name="tuesday">T3</string>
+    <string name="wednesday">T4</string>
+    <string name="thursday">T5</string>
+    <string name="friday">T6</string>
+    <string name="saturday">T7</string>
+
+    <string name="add_alarm_coming_example">Báo thức được đặt trong 1 phút tính từ bây giờ</string>
+    <!--cardview in add alarm-->
+    <string name="turn_off_alarm">Cách tắt báo thức</string>
+    <string name="ring_tone">Nhạc chuông</string>
+    <string name="music_package">Gói âm thanh</string>
+    <string name="wakeup_and_check">Thức dậy và kiểm tra</string>
+    <string name="re_alarm">Báo lại</string>
+    <string name="add_alarm_label">Nhãn</string>
+    <string name="default_label">Mặc định</string>
+
+    <string name="off_label">Tắt</string>
+    <string name="save">Lưu</string>
+    <!--btn in add fast alarm-->
+    <string name="add60min">+60m</string>
+    <string name="add30min">+30m</string>
+    <string name="add15min">+15m</string>
+    <string name="add10min">+10m</string>
+    <string name="add5min">+5m</string>
+    <string name="add1min">+1m</string>
+
+    <string name="record_title">Morning Record</string>
+    <string name="news_title">Bắt đầu ngày mới</string>
+    <string name="setting_title">Cài đặt</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--for setting cardview-->
+    <string name="setting_upgrade">Nâng cấp lên hạng sang</string>
+    <string name="setting_optimize">Tối ưu hóa việc sử dụng</string>
+    <string name="setting_note">Bảng ghi chú</string>
+    <string name="setting_alarm">Báo thức</string>
+    <string name="setting_turnoff">Tắt báo thức hoặc nhiệm vụ</string>
+    <string name="setting_share">Chung</string>
+    <string name="setting_question">Các câu hỏi thường gặp</string>
+    <string name="setting_response">Gửi phản hồi</string>
+    <string name="setting_info">Thông tin về ứng dụng</string>
+
+    <string name="news_summary">Tóm lược</string>
+    <string name="news_weather">Thời tiết hôm nay</string>
+    <string name="news_horoscope">Tử vi</string>
+    <string name="news_news">Tin tức hôm nay</string>
+</resources>
