@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
         private SwitchMaterial switchMaterialTime;
         private TextView textViewRepeat;
         private TextView textViewLabel;
-        private ImageView menuOption;
+        private MaterialButton menuOption;
 
         public AlarmHolder(View itemView) {
             super(itemView);

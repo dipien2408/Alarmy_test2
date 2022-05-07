@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 
@@ -32,7 +33,8 @@ public class AddAlarm extends AppCompatActivity {
             "com.android.alarmy_test2.LABEL";
     public static final String EXTRA_SNOOZED =
             "com.android.alarmy_test2.SNOOZED";
-
+    public static final String EXTRA_ADD_OR_EDIT =
+            "com.android.alarmy_test2.EXTRA_ADD_OR_EDIT";
     TimePicker timePicker;
     ImageView backBtn, playRingtoneBtn;
     CheckBox repeatingAllDayCheckBox, checkBoxVibrate;
@@ -40,9 +42,11 @@ public class AddAlarm extends AppCompatActivity {
     TextView timeRemaining, ringTone, textViewSnoozed, textViewLabel;
     Slider volumeSlider;
     ImageView settingRingtone, settingSnoozed, settingLabel;
-    FloatingActionButton saveAlarmFab;
+    ExtendedFloatingActionButton saveAlarmFab;
 
     private boolean isPlay;
+    //0 is add, 1 is edit
+    private int isAddOrEdit = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +90,7 @@ public class AddAlarm extends AppCompatActivity {
             checkBoxVibrate.setChecked(intent.getBooleanExtra(EXTRA_VIBRATE, false));
             textViewLabel.setText(intent.getStringExtra(EXTRA_LABEL));
             textViewSnoozed.setText(Boolean.toString(intent.getBooleanExtra(EXTRA_SNOOZED, false)));
+            isAddOrEdit = 1;
         }
     }
 
@@ -106,7 +111,7 @@ public class AddAlarm extends AppCompatActivity {
         data.putExtra(EXTRA_VIBRATE, vibrate);
         data.putExtra(EXTRA_LABEL, label);
         data.putExtra(EXTRA_SNOOZED, snoozed);
-
+        data.putExtra(EXTRA_ADD_OR_EDIT, isAddOrEdit);
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
             data.putExtra(EXTRA_ID, id);
