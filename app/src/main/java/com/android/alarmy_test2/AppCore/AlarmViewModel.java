@@ -1,10 +1,13 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.AppCore;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
+import com.android.alarmy_test2.Database.Alarm;
+import com.android.alarmy_test2.Database.AlarmRepository;
 
 import java.util.List;
 

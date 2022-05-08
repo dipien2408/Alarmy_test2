@@ -1,4 +1,4 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.Database;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Alarm.class}, version = 1)
+@Database(entities = {Alarm.class}, version = 2)
 public abstract class AlarmDatabase extends RoomDatabase {
 
     private static AlarmDatabase instance;

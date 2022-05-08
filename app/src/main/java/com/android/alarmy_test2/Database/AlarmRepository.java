@@ -1,4 +1,4 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.Database;
 
 import android.app.Application;
 import android.os.AsyncTask;

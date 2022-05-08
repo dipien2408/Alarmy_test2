@@ -1,15 +1,18 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.AppCore;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.alarmy_test2.Database.Alarm;
+import com.android.alarmy_test2.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -18,34 +21,44 @@ import java.util.List;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder> {
     private List<Alarm> alarms = new ArrayList<>();
-    private OnItemClickListener listener;
+    private OnItemClickListener itemClickListener;
+    private OnToggleAlarmListener toggleAlarmListener;
+    private AlarmViewModel alarmViewModel;
+    public AlarmAdapter(OnToggleAlarmListener toggleAlarmListener) {
+        this.toggleAlarmListener = toggleAlarmListener;
+    }
 
     @NonNull
     @Override
     public AlarmHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.alarm_card_view, parent, false);
-        return new AlarmHolder(itemView);
+        return new AlarmHolder(itemView, toggleAlarmListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AlarmHolder holder, int position) {
-        int count = 0;
         Alarm currentAlarm = alarms.get(position);
         holder.switchMaterialTime.setText(new StringBuilder().append(currentAlarm.getTimeHour()).append(" : ").append(currentAlarm.getTimeMinute()).toString());
-        holder.switchMaterialTime.setOnClickListener(view -> {
-            currentAlarm.setIsEnabled(!currentAlarm.isEnabled());
-        });
+        holder.switchMaterialTime.setOnCheckedChangeListener((buttonView, isChecked) -> toggleAlarmListener.onToggle(currentAlarm));
         holder.menuOption.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(view.getContext(), holder.itemView);
             popup.inflate(R.menu.alarm_cardview_dropdown);
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.nav_delete) {
+                    alarmViewModel.delete(currentAlarm);
+                    Toast.makeText(view.getContext(), "Alarm deleted", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            });
             popup.show();
         });
-        Boolean[] days = currentAlarm.getRepeatingDays();
-        for (int i = 0; i < 7; i++) {
-            if(days[i]) count++;
+        if (!currentAlarm.isOneShot()) {
+            holder.textViewRepeat.setText(currentAlarm.getRepeatingDaysText());
+        } else {
+            holder.textViewRepeat.setText("  ");
         }
-        holder.textViewRepeat.setText(new StringBuilder().append("Days").append(count).toString());
+
         holder.textViewLabel.setText(String.valueOf(currentAlarm.getLabel()));
     }
 
@@ -59,6 +72,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
         notifyDataSetChanged();
     }
 
+    @Override
+    public void onViewRecycled(@NonNull AlarmHolder holder) {
+        super.onViewRecycled(holder);
+        holder.switchMaterialTime.setOnCheckedChangeListener(null);
+    }
+
     public Alarm getAlarmAt(int position) {
         return alarms.get(position);
     }
@@ -69,7 +88,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
         private TextView textViewLabel;
         private MaterialButton menuOption;
 
-        public AlarmHolder(View itemView) {
+        private OnToggleAlarmListener toggleAlarmListener;
+
+        public AlarmHolder(View itemView, OnToggleAlarmListener toggleAlarmListener) {
             super(itemView);
             switchMaterialTime = itemView.findViewById(R.id.alarm_switch);
             textViewRepeat = itemView.findViewById(R.id.alarm_repeat);
@@ -77,10 +98,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
             menuOption = itemView.findViewById(R.id.alarm_card_option);
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
-                if (listener != null && position != RecyclerView.NO_POSITION) {
-                    listener.onItemClick(alarms.get(position));
+                if (itemClickListener != null && position != RecyclerView.NO_POSITION) {
+                    itemClickListener.onItemClick(alarms.get(position));
                 }
             });
+
+            this.toggleAlarmListener = toggleAlarmListener;
         }
     }
 
@@ -88,7 +111,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
         void onItemClick(Alarm alarm);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 }

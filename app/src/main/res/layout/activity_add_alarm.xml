@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddAlarm"
+    tools:context=".AppCore.AddAlarm"
     android:background="@color/home_background">
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -114,7 +114,8 @@
                     android:text="@string/sunday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_monday"
@@ -126,7 +127,8 @@
                     android:text="@string/monday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_tuesday"
@@ -138,7 +140,8 @@
                     android:text="@string/tuesday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_wednesday"
@@ -150,7 +153,8 @@
                     android:text="@string/wednesday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_thursday"
@@ -162,7 +166,8 @@
                     android:text="@string/thursday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_friday"
@@ -174,7 +179,8 @@
                     android:text="@string/friday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
                 <Button
                     android:id="@+id/repeating_saturday"
@@ -186,7 +192,8 @@
                     android:text="@string/saturday"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    app:backgroundTint="@color/add_min_btn"/>
+                    app:backgroundTint="@color/add_min_btn"
+                    android:onClick="takeBtn"/>
 
             </LinearLayout>
 

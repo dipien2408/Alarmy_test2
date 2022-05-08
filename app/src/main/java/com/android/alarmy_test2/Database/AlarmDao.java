@@ -1,4 +1,4 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.Database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;

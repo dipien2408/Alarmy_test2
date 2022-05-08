@@ -1,4 +1,4 @@
-package com.android.alarmy_test2;
+package com.android.alarmy_test2.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +9,7 @@ import com.android.alarmy_test2.Fragments.HomeFragment;
 import com.android.alarmy_test2.Fragments.NewsFragment;
 import com.android.alarmy_test2.Fragments.RecordFragment;
 import com.android.alarmy_test2.Fragments.SettingFragment;
+import com.android.alarmy_test2.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.material.navigation.NavigationBarView;
