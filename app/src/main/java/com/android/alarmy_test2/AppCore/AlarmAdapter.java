@@ -1,16 +1,18 @@
 package com.android.alarmy_test2.AppCore;
 
+import android.content.Context;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
+import androidx.lifecycle.ViewModelProvider;
 import com.android.alarmy_test2.Database.Alarm;
 import com.android.alarmy_test2.R;
 import com.google.android.material.button.MaterialButton;
@@ -24,8 +26,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
     private OnItemClickListener itemClickListener;
     private OnToggleAlarmListener toggleAlarmListener;
     private AlarmViewModel alarmViewModel;
-    public AlarmAdapter(OnToggleAlarmListener toggleAlarmListener) {
+    public AlarmAdapter(OnToggleAlarmListener toggleAlarmListener, Context context) {
         this.toggleAlarmListener = toggleAlarmListener;
+        alarmViewModel = new ViewModelProvider((FragmentActivity) context).get(AlarmViewModel.class);
     }
 
     @NonNull
@@ -40,6 +43,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
     public void onBindViewHolder(@NonNull AlarmHolder holder, int position) {
         Alarm currentAlarm = alarms.get(position);
         holder.switchMaterialTime.setText(new StringBuilder().append(currentAlarm.getTimeHour()).append(" : ").append(currentAlarm.getTimeMinute()).toString());
+        holder.switchMaterialTime.setChecked(currentAlarm.isEnabled());
         holder.switchMaterialTime.setOnCheckedChangeListener((buttonView, isChecked) -> toggleAlarmListener.onToggle(currentAlarm));
         holder.menuOption.setOnClickListener(view -> {
             PopupMenu popup = new PopupMenu(view.getContext(), holder.itemView);

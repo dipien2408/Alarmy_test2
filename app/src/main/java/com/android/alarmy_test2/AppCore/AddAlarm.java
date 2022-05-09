@@ -95,8 +95,12 @@ public class AddAlarm extends AppCompatActivity {
 
         timePicker.setIs24HourView(true);
 
-        backBtn.setOnClickListener(view -> AddAlarm.super.onBackPressed());
-        saveAlarmFab.setOnClickListener(view -> saveNote());
+        backBtn.setOnClickListener(view -> {
+            Intent data = new Intent();
+            data.putExtra(EXTRA_ADD_OR_EDIT, 3);
+            setResult(RESULT_OK, data);
+            AddAlarm.super.onBackPressed();
+        });
 
         isPlay = false;
         playRingtoneBtn.setOnClickListener(view -> {
@@ -108,7 +112,7 @@ public class AddAlarm extends AppCompatActivity {
                 isPlay = true;
             }
         });
-
+        saveAlarmFab.setOnClickListener(view -> saveNote());
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
@@ -121,7 +125,10 @@ public class AddAlarm extends AppCompatActivity {
             textViewLabel.setText(intent.getStringExtra(EXTRA_LABEL));
             textViewSnoozed.setText(new StringBuilder().append(intent.getIntExtra(EXTRA_SNOOZED_MINUTE, 5)).append("Phút").toString());
             isAddOrEdit = 1;
+        } else {
+            initialAddBtn();
         }
+
     }
 
     private void saveNote() {
@@ -140,7 +147,7 @@ public class AddAlarm extends AppCompatActivity {
                 mRepeatingDays[i] = buttons.get(i).getTag() == True;
             }
         }
-
+        Log.d("CHeckBox", String.valueOf(repeatingAllDayCheckBox.isChecked()));
         for(int i = 0; i < buttons.size(); i++) {
             if(buttons.get(i).getTag() == True) {
                 oneShot = false;
@@ -201,6 +208,12 @@ public class AddAlarm extends AppCompatActivity {
                 buttons.get(i).setTag(false);
                 buttons.get(i).setBackgroundColor(ContextCompat.getColor(this, R.color.add_min_btn));
             }
+        }
+    }
+
+    public void initialAddBtn(){
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setTag(false);
         }
     }
 }

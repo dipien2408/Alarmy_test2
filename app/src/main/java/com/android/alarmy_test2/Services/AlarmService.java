@@ -20,7 +20,7 @@ import com.android.alarmy_test2.Activities.RingActivity;
 import com.android.alarmy_test2.R;
 
 public class AlarmService extends Service {
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
     private Vibrator vibrator;
 
     @Override

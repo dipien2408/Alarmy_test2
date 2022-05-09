@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -118,11 +120,26 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
-        final AlarmAdapter adapter = new AlarmAdapter(this);
+        final AlarmAdapter adapter = new AlarmAdapter(this, getContext());
         recyclerView.setAdapter(adapter);
 
         alarmViewModel = new ViewModelProvider(this).get(AlarmViewModel.class);
         alarmViewModel.getAllAlarms().observe(getViewLifecycleOwner(), adapter::setAlarms);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.d("Adapter", String.valueOf(adapter.getAlarmAt(viewHolder.getAdapterPosition())));
+                alarmViewModel.delete(adapter.getAlarmAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(getContext(), "Note deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
 
         adapter.setOnItemClickListener(alarm -> {
             boolean[] mRepeatingDays = new boolean[7];
@@ -175,12 +192,11 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
                 boolean snoozed = result.getData().getBooleanExtra(AddAlarm.EXTRA_SNOOZED,false);
                 int snoozedMinute = result.getData().getIntExtra(AddAlarm.EXTRA_SNOOZED_MINUTE, 5);
 
-                Alarm alarm = new Alarm(timeHour, timeMinute, mMonday, mTuesday, mWednesday, mThursday, mFriday, mSaturday, mSunday
+                Alarm alarm = new Alarm(timeHour, timeMinute, mRepeatingDays[0], mRepeatingDays[1], mRepeatingDays[2], mRepeatingDays[3], mRepeatingDays[4], mRepeatingDays[5], mRepeatingDays[6]
                         , tone, enabled, oneshot, vibrate, label, snoozed, snoozedMinute);
 
                 alarmViewModel.insert(alarm);
                 alarm.schedule(getContext());
-
                 Toast.makeText(getContext(), "Alarm saved", Toast.LENGTH_SHORT).show();
             } else if (result != null && result.getData().getIntExtra(AddAlarm.EXTRA_ADD_OR_EDIT, 0) == 1  && result.getResultCode() == Activity.RESULT_OK) {
                 int id = result.getData().getIntExtra(AddAlarm.EXTRA_ID, -1);
@@ -204,7 +220,7 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
                 boolean snoozed = result.getData().getBooleanExtra(AddAlarm.EXTRA_SNOOZED,false);
                 int snoozedMinute = result.getData().getIntExtra(AddAlarm.EXTRA_SNOOZED_MINUTE, 5);
 
-                Alarm alarm = new Alarm(timeHour, timeMinute, mMonday, mTuesday, mWednesday, mThursday, mFriday, mSaturday, mSunday
+                Alarm alarm = new Alarm(timeHour, timeMinute, mRepeatingDays[0], mRepeatingDays[1], mRepeatingDays[2], mRepeatingDays[3], mRepeatingDays[4], mRepeatingDays[5], mRepeatingDays[6]
                         , tone, enabled, oneshot, vibrate, label, snoozed, snoozedMinute);
                 alarm.setId(id);
 

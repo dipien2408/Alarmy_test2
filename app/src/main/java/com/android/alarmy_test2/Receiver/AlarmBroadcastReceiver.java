@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.alarmy_test2.Services.AlarmService;
@@ -28,7 +29,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+
             String toastText = String.format("Alarm Reboot");
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
             startRescheduleAlarmsService(context);
@@ -36,10 +39,12 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         else {
             String toastText = String.format("Alarm Received");
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
+
             if (intent.getBooleanExtra(ONESHOT, true)) {
                 startAlarmService(context, intent);
             } {
                 if (alarmIsToday(intent)) {
+                    Log.d("Receiver", "Here");
                     startAlarmService(context, intent);
                 }
             }
@@ -85,6 +90,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void startAlarmService(Context context, Intent intent) {
+
         Intent intentService = new Intent(context, AlarmService.class);
         intentService.putExtra(LABEL, intent.getStringExtra(LABEL));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -95,6 +101,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     }
 
     private void startRescheduleAlarmsService(Context context) {
+
         Intent intentService = new Intent(context, RescheduleAlarmsService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(intentService);

@@ -234,7 +234,7 @@ public class Alarm {
         intent.putExtra(SNOOZED_MINUTE, snoozeMinute);
 
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
-
+        Log.d("Receiver", intent.getStringExtra(LABEL));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, timeHour);
@@ -247,10 +247,10 @@ public class Alarm {
             calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
         }
 
-        if (!isOneShot) {
+        if (isOneShot) {
             String toastText = null;
             try {
-                toastText = String.format(Locale.getDefault(),"One Time Alarm %s scheduled for %s at %02d:%02d", label, DayUtil.toDay(calendar.get(Calendar.DAY_OF_WEEK)), timeHour, timeMinute, id);
+                toastText = String.format(Locale.getDefault(),"One Time Alarm %s scheduled for %s at %02d:%02d", label, DayUtil.toDay(calendar.get(Calendar.DAY_OF_WEEK)), timeHour, timeMinute);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -283,13 +283,16 @@ public class Alarm {
             );
         }
 
+
+
+
         this.isEnabled = true;
     }
 
     public void cancelAlarm(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         alarmManager.cancel(alarmPendingIntent);
         this.isEnabled = false;
 
