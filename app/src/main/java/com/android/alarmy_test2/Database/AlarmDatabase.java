@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {Alarm.class}, version = 2)
+@Database(entities = {Alarm.class}, version = 5)
 public abstract class AlarmDatabase extends RoomDatabase {
 
     private static AlarmDatabase instance;
@@ -44,7 +44,7 @@ public abstract class AlarmDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            //noteDao.insert(new Note("Title 1", "Description 1", 1));
+            //alarmDao.insert(new Alarm(timeHour, timeMinute, 1));
 
             return null;
         }

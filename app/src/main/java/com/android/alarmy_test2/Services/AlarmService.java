@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -37,19 +38,21 @@ public class AlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Intent notificationIntent = new Intent(this, RingActivity.class);
+        startActivity(notificationIntent);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        String alarmTitle = String.format("%s Alarm", intent.getStringExtra(LABEL));
+        String alarmTitle = String.valueOf(R.string.alarm);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(alarmTitle)
-                .setContentText("Ring Ring .. Ring Ring")
+                .setContentText("Alarm")
                 .setSmallIcon(R.drawable.ic_baseline_alarm_24)
                 .setContentIntent(pendingIntent)
                 .build();
 
         mediaPlayer.start();
-
+        Log.d("Music", "started");
         boolean isVibrate = intent.getBooleanExtra(VIBRATE, false);
         if(isVibrate) {
             long[] pattern = { 0, 100, 1000 };

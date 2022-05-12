@@ -2,7 +2,7 @@ package com.android.alarmy_test2.Utilities;
 
 import java.util.Calendar;
 
-public final class DayUtil {
+public final class DayUtilities {
     public static final String toDay(int day) throws Exception {
         switch (day) {
             case Calendar.SUNDAY:

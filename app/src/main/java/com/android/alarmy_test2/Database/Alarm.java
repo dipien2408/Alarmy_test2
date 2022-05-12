@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey;
 
 
 import com.android.alarmy_test2.Receiver.AlarmBroadcastReceiver;
-import com.android.alarmy_test2.Utilities.DayUtil;
+import com.android.alarmy_test2.Utilities.DayUtilities;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -232,7 +232,13 @@ public class Alarm {
         intent.putExtra(SNOOZED, isSnoozed);
         intent.putExtra(ALARM_TONE, alarmTone);
         intent.putExtra(SNOOZED_MINUTE, snoozeMinute);
-
+        Log.d("Mon", String.valueOf(monday));
+        Log.d("Tues", String.valueOf(tuesday));
+        Log.d("Wed", String.valueOf(wednesday));
+        Log.d("Thur", String.valueOf(thursday));
+        Log.d("Fri", String.valueOf(friday));
+        Log.d("Satr", String.valueOf(saturday));
+        Log.d("id", String.valueOf(id));
         PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, id, intent, 0);
         Log.d("Receiver", intent.getStringExtra(LABEL));
         Calendar calendar = Calendar.getInstance();
@@ -250,7 +256,7 @@ public class Alarm {
         if (isOneShot) {
             String toastText = null;
             try {
-                toastText = String.format(Locale.getDefault(),"One Time Alarm %s scheduled for %s at %02d:%02d", label, DayUtil.toDay(calendar.get(Calendar.DAY_OF_WEEK)), timeHour, timeMinute);
+                toastText = String.format(Locale.getDefault(),"One Time Alarm %s scheduled for %s at %02d:%02d", label, DayUtilities.toDay(calendar.get(Calendar.DAY_OF_WEEK)), timeHour, timeMinute);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -267,7 +273,7 @@ public class Alarm {
                     alarmPendingIntent
             );
         } else {
-            String toastText = String.format(Locale.getDefault(),"Recurring Alarm %s scheduled at %02d:%02d", getRepeatingDaysText(), timeHour, timeMinute);
+            String toastText = String.format(Locale.getDefault(),"Repeating Alarm on %s scheduled at %02d:%02d", getRepeatingDaysText(), timeHour, timeMinute);
             String finalToastText = toastText;
             new Handler().postDelayed(() -> {
                 Toast.makeText(context, finalToastText, Toast.LENGTH_LONG).show();
@@ -275,10 +281,10 @@ public class Alarm {
             },1500); // will trigger your code after 1.5 seconds
 
             final long RUN_DAILY = 24 * 60 * 60 * 1000;
-            alarmManager.setRepeating(
+            alarmManager.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
-                    RUN_DAILY,
+                    AlarmManager.INTERVAL_DAY/1000,
                     alarmPendingIntent
             );
         }

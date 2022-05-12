@@ -63,7 +63,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
             holder.textViewRepeat.setText("  ");
         }
 
-        holder.textViewLabel.setText(String.valueOf(currentAlarm.getLabel()));
+        holder.textViewLabel.setText(String.valueOf(currentAlarm.getId()));
     }
 
     @Override

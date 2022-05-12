@@ -42,9 +42,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
             if (intent.getBooleanExtra(ONESHOT, true)) {
                 startAlarmService(context, intent);
-            } {
+            } else {
                 if (alarmIsToday(intent)) {
-                    Log.d("Receiver", "Here");
                     startAlarmService(context, intent);
                 }
             }

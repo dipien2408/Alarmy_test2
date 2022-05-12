@@ -53,11 +53,12 @@ public class AddAlarm extends AppCompatActivity {
     Button repeatBtn;
     TextView timeRemaining, ringTone, textViewSnoozed, textViewLabel;
     Slider volumeSlider;
-    ImageView settingRingtone, settingSnoozed, settingLabel;
-    ExtendedFloatingActionButton saveAlarmFab;
 
-    ArrayList<Button> buttons = new ArrayList<Button>();
-    ArrayList<Boolean> checkBtn = new ArrayList<Boolean>();
+    ImageView settingRingtone, settingSnoozed, settingLabel;
+
+    ArrayList<Button> buttons = new ArrayList<>();
+
+    ExtendedFloatingActionButton saveAlarmFab;
 
     boolean[] mRepeatingDays = new boolean[7];
     private boolean isPlay;
@@ -71,17 +72,27 @@ public class AddAlarm extends AppCompatActivity {
         setContentView(R.layout.activity_add_alarm);
 
         timePicker = findViewById(R.id.time_picker);
+        timePicker.setIs24HourView(true);
+
         backBtn = findViewById(R.id.back_pressed);
+        backBtn.setOnClickListener(view -> {
+            Intent data = new Intent();
+            data.putExtra(EXTRA_ADD_OR_EDIT, 3);
+            setResult(RESULT_OK, data);
+            AddAlarm.super.onBackPressed();
+        });
+
         playRingtoneBtn = findViewById(R.id.play_ring_tone);
-        repeatingAllDayCheckBox = findViewById(R.id.repeating_all_day);
-        checkBoxVibrate = findViewById(R.id.vibrate_checkbox);
-        repeatBtn = findViewById(R.id.repeating_monday);
-        timeRemaining = findViewById(R.id.time_remaining);
-        ringTone = findViewById(R.id.ring_tone);
-        textViewSnoozed = findViewById(R.id.snoozed);
-        textViewLabel = findViewById(R.id.label);
-        volumeSlider = findViewById(R.id.volume_slider);
-        saveAlarmFab = findViewById(R.id.save_alarm_fab);
+        isPlay = false;
+        playRingtoneBtn.setOnClickListener(view -> {
+            if(isPlay) {
+                playRingtoneBtn.setImageResource(R.drawable.ic_play);
+                isPlay = false;
+            } else {
+                playRingtoneBtn.setImageResource(R.drawable.ic_stop);
+                isPlay = true;
+            }
+        });
 
         if (buttons.size() == 0) {
             buttons.add((Button) findViewById(R.id.repeating_monday));
@@ -93,31 +104,22 @@ public class AddAlarm extends AppCompatActivity {
             buttons.add((Button) findViewById(R.id.repeating_sunday));
         }
 
-        timePicker.setIs24HourView(true);
+        repeatingAllDayCheckBox = findViewById(R.id.repeating_all_day);
+        checkBoxVibrate = findViewById(R.id.vibrate_checkbox);
+        repeatBtn = findViewById(R.id.repeating_monday);
+        timeRemaining = findViewById(R.id.time_remaining);
+        ringTone = findViewById(R.id.ring_tone);
+        textViewSnoozed = findViewById(R.id.snoozed);
+        textViewLabel = findViewById(R.id.label);
+        volumeSlider = findViewById(R.id.volume_slider);
 
-        backBtn.setOnClickListener(view -> {
-            Intent data = new Intent();
-            data.putExtra(EXTRA_ADD_OR_EDIT, 3);
-            setResult(RESULT_OK, data);
-            AddAlarm.super.onBackPressed();
-        });
-
-        isPlay = false;
-        playRingtoneBtn.setOnClickListener(view -> {
-            if(isPlay) {
-                playRingtoneBtn.setImageResource(R.drawable.ic_play);
-                isPlay = false;
-            } else {
-                playRingtoneBtn.setImageResource(R.drawable.ic_stop);
-                isPlay = true;
-            }
-        });
-        saveAlarmFab.setOnClickListener(view -> saveNote());
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
             mRepeatingDays = intent.getBooleanArrayExtra(EXTRA_REPEAT);
+
             initialBtn(mRepeatingDays);
+
             timePicker.setCurrentHour(intent.getIntExtra(EXTRA_TIMEHOUR, 1));
             timePicker.setCurrentMinute(intent.getIntExtra(EXTRA_TIMEMINUTE, 1));
             ringTone.setText(intent.getStringExtra(EXTRA_TONE));
@@ -125,20 +127,29 @@ public class AddAlarm extends AppCompatActivity {
             textViewLabel.setText(intent.getStringExtra(EXTRA_LABEL));
             textViewSnoozed.setText(new StringBuilder().append(intent.getIntExtra(EXTRA_SNOOZED_MINUTE, 5)).append("Phút").toString());
             isAddOrEdit = 1;
+
         } else {
             initialAddBtn();
         }
 
+        saveAlarmFab = findViewById(R.id.save_alarm_fab);
+        saveAlarmFab.setOnClickListener(view -> saveNote());
+
     }
 
     private void saveNote() {
-        int timeHour = timePicker.getCurrentHour();
-        int timeMinute = timePicker.getCurrentMinute();
-        String tone = ringTone.getText().toString();
-        boolean vibrate = checkBoxVibrate.isChecked();
-        String label = textViewLabel.getText().toString();
-        boolean snoozed = false;
-        boolean oneShot = true;
+
+        int timeHour, timeMinute;
+        boolean vibrate, snoozed, oneShot;
+        String tone, label;
+
+        timeHour = timePicker.getCurrentHour();
+        timeMinute = timePicker.getCurrentMinute();
+        tone = ringTone.getText().toString();
+        vibrate = checkBoxVibrate.isChecked();
+        label = textViewLabel.getText().toString();
+        snoozed = false;
+        oneShot = true;
 
         if(repeatingAllDayCheckBox.isChecked()) {
             Arrays.fill(mRepeatingDays, true);
@@ -147,7 +158,7 @@ public class AddAlarm extends AppCompatActivity {
                 mRepeatingDays[i] = buttons.get(i).getTag() == True;
             }
         }
-        Log.d("CHeckBox", String.valueOf(repeatingAllDayCheckBox.isChecked()));
+
         for(int i = 0; i < buttons.size(); i++) {
             if(buttons.get(i).getTag() == True) {
                 oneShot = false;
@@ -158,15 +169,16 @@ public class AddAlarm extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra(EXTRA_TIMEHOUR, timeHour);
         data.putExtra(EXTRA_TIMEMINUTE, timeMinute);
-        data.putExtra(EXTRA_TONE, tone);
-        data.putExtra(EXTRA_ENABLED, true);
         data.putExtra(EXTRA_ONESHOT, oneShot);
+        data.putExtra(EXTRA_TONE, tone);
+        data.putExtra(EXTRA_REPEAT, mRepeatingDays);
+        data.putExtra(EXTRA_ENABLED, true);
         data.putExtra(EXTRA_VIBRATE, vibrate);
         data.putExtra(EXTRA_LABEL, label);
         data.putExtra(EXTRA_SNOOZED, snoozed);
-        data.putExtra(EXTRA_REPEAT, mRepeatingDays);
-        data.putExtra(EXTRA_ADD_OR_EDIT, isAddOrEdit);
         data.putExtra(EXTRA_SNOOZED_MINUTE, 5);
+        data.putExtra(EXTRA_ADD_OR_EDIT, isAddOrEdit);
+
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
             data.putExtra(EXTRA_ID, id);
@@ -178,16 +190,14 @@ public class AddAlarm extends AppCompatActivity {
 
     public void takeBtn(View view) {
         Log.d("Take Button", this.toString());
-        int index = 0;
+        int index;
         for (int i = 0; i < buttons.size(); i++) {
             if (buttons.get(i).getId() == view.getId()) {
                 index = i;
                 if ((buttons.get(i).getTag() == null) || (buttons.get(i).getTag() != True)) {
-                    buttons.get(i).setTag(true);
-                    buttons.get(i).setBackgroundColor(ContextCompat.getColor(this, R.color.dayBtn));
+                    setBtnTrue(buttons.get(i));
                 } else {
-                    buttons.get(i).setTag(false);
-                    buttons.get(i).setBackgroundColor(ContextCompat.getColor(this, R.color.add_min_btn));
+                    setBtnFalse(buttons.get(i));
                 }
                 Log.d("Index", String.valueOf(index) + buttons.get(i).getTag());
 
@@ -202,18 +212,47 @@ public class AddAlarm extends AppCompatActivity {
     public void initialBtn(boolean[] booleans){
         for (int i = 0; i < booleans.length; i++) {
             if (booleans[i]) {
-                buttons.get(i).setTag(true);
-                buttons.get(i).setBackgroundColor(ContextCompat.getColor(this, R.color.dayBtn));
+                setBtnTrue(buttons.get(i));
             } else {
-                buttons.get(i).setTag(false);
-                buttons.get(i).setBackgroundColor(ContextCompat.getColor(this, R.color.add_min_btn));
+                setBtnFalse(buttons.get(i));
             }
         }
     }
 
     public void initialAddBtn(){
         for (int i = 0; i < buttons.size(); i++) {
-            buttons.get(i).setTag(false);
+            setBtnFalse(buttons.get(i));
+        }
+    }
+
+    public void setBtnTrue(Button button) {
+        button.setTag(true);
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.dayBtn));
+    }
+
+    public void setBtnFalse(Button button) {
+        button.setTag(false);
+        button.setBackgroundColor(ContextCompat.getColor(this, R.color.add_min_btn));
+    }
+
+    public void onCheckboxClicked(View view) {
+        // Is the view now checked?
+        boolean checked = ((CheckBox) view).isChecked();
+
+        // Check which checkbox was clicked
+        switch(view.getId()) {
+            case R.id.repeating_all_day:
+                if (checked) {
+                    for (int i = 0; i < buttons.size(); i++) {
+                        setBtnTrue(buttons.get(i));
+                    }
+                }
+                else {
+                    for (int i = 0; i < buttons.size(); i++) {
+                        setBtnFalse(buttons.get(i));
+                    }
+                }
+                break;
         }
     }
 }

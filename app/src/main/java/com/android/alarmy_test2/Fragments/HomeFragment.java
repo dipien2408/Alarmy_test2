@@ -41,12 +41,9 @@ import com.android.alarmy_test2.AppCore.AlarmViewModel;
 import com.android.alarmy_test2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment implements OnToggleAlarmListener {
-
-    public static final int ADD_ALARM_REQUEST = 1;
-    public static final int EDIT_ALARM_REQUEST = 2;
 
     private AlarmViewModel alarmViewModel;
 
@@ -54,11 +51,12 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
     private TextView mAddNormalText, mAddFastText;
     private Animation mFabOpenAnim, mFabCloseAnim;
     private boolean isOpen;
-    private boolean mMonday,mTuesday, mWednesday, mThursday, mFriday, mSaturday, mSunday;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
         mMainAddFab = v.findViewById(R.id.main_add_fab);
         mAddNormalFab = v.findViewById(R.id.add_normal_fab);
         mAddFastFab = v.findViewById(R.id.add_fast_fab);
@@ -95,6 +93,14 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
         });
 
         mAddFastFab.setOnClickListener(view -> {
+            mMainAddFab.setImageResource(R.drawable.ic_baseline_add_24);
+            mAddNormalFab.setAnimation(mFabCloseAnim);
+            mAddFastFab.setAnimation(mFabCloseAnim);
+
+            mAddNormalText.setVisibility(View.INVISIBLE);
+            mAddFastText.setVisibility(View.INVISIBLE);
+
+            isOpen = false;
             final Dialog dialog = new Dialog(getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.add_fast_alarm);
@@ -129,12 +135,12 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Log.d("Adapter", String.valueOf(adapter.getAlarmAt(viewHolder.getAdapterPosition())));
                 alarmViewModel.delete(adapter.getAlarmAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(getContext(), "Note deleted", Toast.LENGTH_SHORT).show();
@@ -156,7 +162,7 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
             intent.putExtra(AddAlarm.EXTRA_TIMEMINUTE, alarm.getTimeMinute());
             intent.putExtra(AddAlarm.EXTRA_ONESHOT, alarm.isOneShot());
             intent.putExtra(AddAlarm.EXTRA_TONE, alarm.getAlarmTone());
-            intent.putExtra(EXTRA_REPEAT, mRepeatingDays);
+            intent.putExtra(AddAlarm.EXTRA_REPEAT, mRepeatingDays);
             intent.putExtra(AddAlarm.EXTRA_VIBRATE, alarm.isVibrate());
             intent.putExtra(AddAlarm.EXTRA_LABEL, alarm.getLabel());
             intent.putExtra(AddAlarm.EXTRA_SNOOZED, alarm.isSnoozed());
@@ -164,12 +170,17 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
             startForResult.launch(intent);
         });
 
-        mAddNormalFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddAlarm.class);
-                startForResult.launch(intent);
-            }
+        mAddNormalFab.setOnClickListener(view -> {
+            mMainAddFab.setImageResource(R.drawable.ic_baseline_add_24);
+            mAddNormalFab.setAnimation(mFabCloseAnim);
+            mAddFastFab.setAnimation(mFabCloseAnim);
+
+            mAddNormalText.setVisibility(View.INVISIBLE);
+            mAddFastText.setVisibility(View.INVISIBLE);
+
+            isOpen = false;
+            Intent intent = new Intent(getActivity(), AddAlarm.class);
+            startForResult.launch(intent);
         });
         return v;
     }
@@ -177,15 +188,17 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
         @Override
         public void onActivityResult(ActivityResult result) {
-            if (result != null && result.getData().getIntExtra(AddAlarm.EXTRA_ADD_OR_EDIT, 0) == 0  && result.getResultCode() == Activity.RESULT_OK) {
+            //0 is add
+            if (result != null && Objects.requireNonNull(result.getData()).getIntExtra(AddAlarm.EXTRA_ADD_OR_EDIT, 0) == 0  && result.getResultCode() == Activity.RESULT_OK) {
+
                 int timeHour = result.getData().getIntExtra(AddAlarm.EXTRA_TIMEHOUR, 1);
                 int timeMinute = result.getData().getIntExtra(AddAlarm.EXTRA_TIMEMINUTE,1);
-                String tone = result.getData().getStringExtra(AddAlarm.EXTRA_TONE);
-                boolean enabled = result.getData().getBooleanExtra(AddAlarm.EXTRA_ENABLED,false);
-                boolean vibrate = result.getData().getBooleanExtra(AddAlarm.EXTRA_VIBRATE,false);
                 boolean oneshot = result.getData().getBooleanExtra(AddAlarm.EXTRA_ONESHOT,true);
+                String tone = result.getData().getStringExtra(AddAlarm.EXTRA_TONE);
+                boolean vibrate = result.getData().getBooleanExtra(AddAlarm.EXTRA_VIBRATE,false);
+                boolean enabled = result.getData().getBooleanExtra(AddAlarm.EXTRA_ENABLED,false);
 
-                boolean[] mRepeatingDays = new boolean[7];
+                boolean[] mRepeatingDays;
                 mRepeatingDays = result.getData().getBooleanArrayExtra(EXTRA_REPEAT);
 
                 String label = result.getData().getStringExtra(AddAlarm.EXTRA_LABEL);
@@ -196,8 +209,11 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
                         , tone, enabled, oneshot, vibrate, label, snoozed, snoozedMinute);
 
                 alarmViewModel.insert(alarm);
-                alarm.schedule(getContext());
+                alarm.schedule(requireContext());
+
                 Toast.makeText(getContext(), "Alarm saved", Toast.LENGTH_SHORT).show();
+
+            //1 is edit
             } else if (result != null && result.getData().getIntExtra(AddAlarm.EXTRA_ADD_OR_EDIT, 0) == 1  && result.getResultCode() == Activity.RESULT_OK) {
                 int id = result.getData().getIntExtra(AddAlarm.EXTRA_ID, -1);
 
@@ -208,12 +224,12 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
 
                 int timeHour = result.getData().getIntExtra(AddAlarm.EXTRA_TIMEHOUR, 1);
                 int timeMinute = result.getData().getIntExtra(AddAlarm.EXTRA_TIMEMINUTE,1);
-                String tone = result.getData().getStringExtra(AddAlarm.EXTRA_TONE);
-                boolean enabled = result.getData().getBooleanExtra(AddAlarm.EXTRA_ENABLED,false);
-                boolean vibrate = result.getData().getBooleanExtra(AddAlarm.EXTRA_VIBRATE,false);
                 boolean oneshot = result.getData().getBooleanExtra(AddAlarm.EXTRA_ONESHOT,true);
+                String tone = result.getData().getStringExtra(AddAlarm.EXTRA_TONE);
+                boolean vibrate = result.getData().getBooleanExtra(AddAlarm.EXTRA_VIBRATE,false);
+                boolean enabled = result.getData().getBooleanExtra(AddAlarm.EXTRA_ENABLED,false);
 
-                boolean[] mRepeatingDays = new boolean[7];
+                boolean[] mRepeatingDays;
                 mRepeatingDays = result.getData().getBooleanArrayExtra(EXTRA_REPEAT);
 
                 String label = result.getData().getStringExtra(AddAlarm.EXTRA_LABEL);
@@ -225,7 +241,7 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
                 alarm.setId(id);
 
                 alarmViewModel.update(alarm);
-                alarm.schedule(getContext());
+                alarm.schedule(requireContext());
 
                 Toast.makeText(getContext(), "Alarm updated", Toast.LENGTH_SHORT).show();
             } else {
@@ -233,15 +249,15 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
             }
         }
     });
+
     @Override
     public void onToggle(Alarm alarm) {
         if (alarm.isEnabled()) {
-            alarm.cancelAlarm(getContext());
-            alarmViewModel.update(alarm);
+            alarm.cancelAlarm(requireContext());
         } else {
-            alarm.schedule(getContext());
-            alarmViewModel.update(alarm);
+            alarm.schedule(requireContext());
         }
+        alarmViewModel.update(alarm);
     }
 
 }

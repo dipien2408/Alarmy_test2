@@ -94,6 +94,7 @@
                     android:layout_alignParentEnd="true"
                     android:layoutDirection="rtl"
                     android:text="@string/all_day"
+                    android:onClick="onCheckboxClicked"
                     android:theme="@style/bold_text" />
             </RelativeLayout>
 

@@ -25,6 +25,7 @@ public class RingActivity extends AppCompatActivity {
 
     ImageView dismiss, snooze, clock;
     TextView time, date, label;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,38 +40,35 @@ public class RingActivity extends AppCompatActivity {
         time = findViewById(R.id.alarm_ringing_time);
         date = findViewById(R.id.alarm_ringing_date);
         label = findViewById(R.id.alarm_ringing_title);
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM");
         DateTimeFormatter dtft = DateTimeFormatter.ofPattern("HH:mm");
         LocalDateTime now = LocalDateTime.now();
+
         time.setText(dtft.format(now));
         date.setText(dtf.format(now));
         label.setText(R.string.alarm);
-        dismiss.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
-                getApplicationContext().stopService(intentService);
-                finish();
-            }
+
+        dismiss.setOnClickListener(v -> {
+            Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
+            getApplicationContext().stopService(intentService);
+            finish();
         });
 
-        snooze.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.add(Calendar.MINUTE, 5);
+        snooze.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.add(Calendar.MINUTE, 5);
 
-                Alarm alarm = new Alarm(
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false, false, false, false, false, false
-                        , "ringtone", true, true, true, "Snoozed", false, 5);
+            Alarm alarm = new Alarm(
+                    calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false, false, false, false, false, false
+                    , "ringtone", true, true, true, "Snoozed", false, 5);
 
-                alarm.schedule(getApplicationContext());
+            alarm.schedule(getApplicationContext());
 
-                Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
-                getApplicationContext().stopService(intentService);
-                finish();
-            }
+            Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
+            getApplicationContext().stopService(intentService);
+            finish();
         });
 
         animateClock();
@@ -79,7 +77,7 @@ public class RingActivity extends AppCompatActivity {
     private void animateClock() {
         ObjectAnimator rotateAnimation = ObjectAnimator.ofFloat(clock, "rotation", 0f, 20f, 0f, -20f, 0f);
         rotateAnimation.setRepeatCount(ValueAnimator.INFINITE);
-        rotateAnimation.setDuration(800);
+        rotateAnimation.setDuration(400);
         rotateAnimation.start();
     }
 }
