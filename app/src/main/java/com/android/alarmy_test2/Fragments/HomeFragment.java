@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -18,6 +19,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +44,11 @@ import com.android.alarmy_test2.AppCore.AlarmViewModel;
 import com.android.alarmy_test2.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.w3c.dom.Text;
+
+import java.util.Calendar;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HomeFragment extends Fragment implements OnToggleAlarmListener {
 
@@ -117,6 +124,127 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
             windowAttributes.gravity = Gravity.CENTER;
             window.setAttributes(windowAttributes);
 
+            AtomicInteger hour =  new AtomicInteger(0);
+            AtomicInteger minute = new AtomicInteger(0);
+
+            Button btn60min = (Button) dialog.findViewById(R.id.add60min);
+            Button btn30min = (Button) dialog.findViewById(R.id.add30min);
+            Button btn15min = (Button) dialog.findViewById(R.id.add15min);
+            Button btn10min = (Button) dialog.findViewById(R.id.add10min);
+            Button btn5min = (Button) dialog.findViewById(R.id.add5min);
+            Button btn1min = (Button) dialog.findViewById(R.id.add1min);
+            TextView time = (TextView) dialog.findViewById(R.id.add_fast_count);
+            CheckBox vibrate = (CheckBox) dialog.findViewById(R.id.add_fast_vibrate);
+            Button save = (Button) dialog.findViewById(R.id.add_fast_save);
+            Log.d("Minute", String.valueOf(minute));
+            btn60min.setOnClickListener(view1 -> {
+                hour.getAndAdd(1);
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }
+                Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+            });
+
+            btn30min.setOnClickListener(view1 -> {
+                minute.getAndAdd(30);
+                if(minute.get()>59){
+                    for(int i = 0; i < 60; i++) {
+                        minute.getAndDecrement();
+                    }
+                    hour.getAndAdd(1);
+                }
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }
+                Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+            });
+
+            btn15min.setOnClickListener(view1 -> {
+                minute.addAndGet(15);
+                if(minute.get()>59){
+                    for(int i = 0; i < 60; i++) {
+                        minute.getAndDecrement();
+                    }
+                    hour.getAndAdd(1);
+                }
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+            });
+
+            btn10min.setOnClickListener(view1 -> {
+                minute.addAndGet(10);
+                if(minute.get()>59){
+                    for(int i = 0; i < 60; i++) {
+                        minute.getAndDecrement();
+                    }
+                    hour.getAndAdd(1);
+                }
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+            });
+
+            btn5min.setOnClickListener(view1 -> {
+                minute.addAndGet(5);
+                if(minute.get()>59){
+                    for(int i = 0; i < 60; i++) {
+                        minute.getAndDecrement();
+                    }
+                    hour.getAndAdd(1);
+                }
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+
+            });
+
+            btn1min.setOnClickListener(view1 -> {
+                minute.addAndGet(1);
+                if(minute.get()>59){
+                    for(int i = 0; i < 60; i++) {
+                        minute.getAndDecrement();
+                    }
+                    hour.getAndAdd(1);
+                }
+                if(hour.get()>23){
+                    for(int i = 0; i< 24; i++) {
+                        hour.getAndDecrement();
+                    }
+                }Log.d("Minute", String.valueOf(minute));
+                time.setText(new StringBuilder().append("+ ").append(hour).append(" : ").append(minute).toString());
+            });
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.add(Calendar.MINUTE, minute.get());
+            calendar.add(Calendar.HOUR_OF_DAY, hour.get());
+            save.setOnClickListener(view12 -> {
+                Alarm alarm = new Alarm(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false, false, false, false, false, false, false
+                        , RingtoneManager.getActualDefaultRingtoneUri(getContext(),
+                        RingtoneManager.TYPE_ALARM).toString(), true, true, vibrate.isChecked(), getString(R.string.default_label), false, 5);
+
+                alarmViewModel.insert(alarm);
+                alarm.schedule(requireContext());
+                dialog.dismiss();
+                Toast.makeText(getContext(), "Alarm saved", Toast.LENGTH_SHORT).show();
+
+            });
             dialog.setCancelable(true);
 
             dialog.show();
@@ -142,6 +270,9 @@ public class HomeFragment extends Fragment implements OnToggleAlarmListener {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Log.d("Adapter", String.valueOf(adapter.getAlarmAt(viewHolder.getAdapterPosition())));
+                if (adapter.getAlarmAt(viewHolder.getAdapterPosition()).isEnabled()) {
+                    adapter.getAlarmAt(viewHolder.getAdapterPosition()).cancelAlarm(requireContext());
+                }
                 alarmViewModel.delete(adapter.getAlarmAt(viewHolder.getAdapterPosition()));
                 Toast.makeText(getContext(), "Note deleted", Toast.LENGTH_SHORT).show();
             }

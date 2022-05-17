@@ -50,6 +50,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
             popup.inflate(R.menu.alarm_cardview_dropdown);
             popup.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.nav_delete) {
+                    if(currentAlarm.isEnabled()) {
+                        currentAlarm.cancelAlarm(view.getContext());
+                    }
                     alarmViewModel.delete(currentAlarm);
                     Toast.makeText(view.getContext(), "Alarm deleted", Toast.LENGTH_SHORT).show();
                 }
@@ -63,7 +66,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmHolder>
             holder.textViewRepeat.setText("  ");
         }
 
-        holder.textViewLabel.setText(String.valueOf(currentAlarm.getId()));
+        holder.textViewLabel.setText(String.valueOf(currentAlarm.getLabel()));
     }
 
     @Override

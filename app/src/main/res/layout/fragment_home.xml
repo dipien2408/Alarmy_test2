@@ -29,6 +29,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/home_next_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lexend_semi_bold"
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lexend_semi_bold"
-                android:text="@string/no_alarm_on"
+                android:text="@string/next_alarm"
                 android:gravity="start"
                 android:theme="@style/bold_text"
                 android:textSize="25sp" />

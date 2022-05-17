@@ -1,24 +1,43 @@
 package com.android.alarmy_test2.AppCore;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.android.alarmy_test2.Database.Alarm;
 import com.android.alarmy_test2.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.slider.Slider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 
 public class AddAlarm extends AppCompatActivity {
@@ -51,7 +70,7 @@ public class AddAlarm extends AppCompatActivity {
     ImageView backBtn, playRingtoneBtn;
     CheckBox repeatingAllDayCheckBox, checkBoxVibrate;
     Button repeatBtn;
-    TextView timeRemaining, ringTone, textViewSnoozed, textViewLabel;
+    TextView timeRemaining, textViewRingTone, textViewSnoozed, textViewLabel;
     Slider volumeSlider;
 
     ImageView settingRingtone, settingSnoozed, settingLabel;
@@ -63,6 +82,8 @@ public class AddAlarm extends AppCompatActivity {
     boolean[] mRepeatingDays = new boolean[7];
     private boolean isPlay;
     Boolean True = true;
+    private String tone;
+    private Ringtone ringtone;
 
     //0 is add, 1 is edit
     private int isAddOrEdit = 0;
@@ -70,6 +91,25 @@ public class AddAlarm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_alarm);
+
+        tone = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_ALARM).toString();
+        ringtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(tone));
+        Log.d("Tone", ringtone.getTitle(getApplicationContext()));
+        textViewRingTone = findViewById(R.id.ring_tone);
+        textViewRingTone.setText(ringtone.getTitle(getApplicationContext()));
+
+        repeatingAllDayCheckBox = findViewById(R.id.repeating_all_day);
+        checkBoxVibrate = findViewById(R.id.vibrate_checkbox);
+        repeatBtn = findViewById(R.id.repeating_monday);
+        timeRemaining = findViewById(R.id.time_remaining);
+
+        textViewSnoozed = findViewById(R.id.snoozed);
+        textViewLabel = findViewById(R.id.label);
+        volumeSlider = findViewById(R.id.volume_slider);
+
+        settingLabel = findViewById(R.id.setting_add_alarm_label);
+        settingRingtone = findViewById(R.id.setting_ring_tone);
+        settingSnoozed = findViewById(R.id.setting_snoozed_alarm);
 
         timePicker = findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -104,33 +144,70 @@ public class AddAlarm extends AppCompatActivity {
             buttons.add((Button) findViewById(R.id.repeating_sunday));
         }
 
-        repeatingAllDayCheckBox = findViewById(R.id.repeating_all_day);
-        checkBoxVibrate = findViewById(R.id.vibrate_checkbox);
-        repeatBtn = findViewById(R.id.repeating_monday);
-        timeRemaining = findViewById(R.id.time_remaining);
-        ringTone = findViewById(R.id.ring_tone);
-        textViewSnoozed = findViewById(R.id.snoozed);
-        textViewLabel = findViewById(R.id.label);
-        volumeSlider = findViewById(R.id.volume_slider);
-
         Intent intent = getIntent();
 
         if (intent.hasExtra(EXTRA_ID)) {
             mRepeatingDays = intent.getBooleanArrayExtra(EXTRA_REPEAT);
 
             initialBtn(mRepeatingDays);
-
             timePicker.setCurrentHour(intent.getIntExtra(EXTRA_TIMEHOUR, 1));
             timePicker.setCurrentMinute(intent.getIntExtra(EXTRA_TIMEMINUTE, 1));
-            ringTone.setText(intent.getStringExtra(EXTRA_TONE));
+            ringtone = RingtoneManager.getRingtone(getApplicationContext(), Uri.parse(intent.getStringExtra(EXTRA_TONE)));
+            textViewRingTone.setText(ringtone.getTitle(getApplicationContext()));
             checkBoxVibrate.setChecked(intent.getBooleanExtra(EXTRA_VIBRATE, false));
             textViewLabel.setText(intent.getStringExtra(EXTRA_LABEL));
-            textViewSnoozed.setText(new StringBuilder().append(intent.getIntExtra(EXTRA_SNOOZED_MINUTE, 5)).append("Phút").toString());
+            textViewSnoozed.setText(new StringBuilder().append(intent.getIntExtra(EXTRA_SNOOZED_MINUTE, 5)).append(" Phút").toString());
             isAddOrEdit = 1;
 
         } else {
             initialAddBtn();
         }
+
+        settingRingtone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Alarm Sound");
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) Uri.parse(tone));
+                startForResult.launch(intent);
+            }
+        });
+
+        settingLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final BottomSheetDialog dialog = new BottomSheetDialog(AddAlarm.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.add_alarm_label_setting);
+
+                Window window = dialog.getWindow();
+                if(window == null) {
+                    return;
+                }
+
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                EditText input = (EditText) dialog.findViewById(R.id.input_label);
+                Button dismiss = (Button) dialog.findViewById(R.id.label_setting_dismiss);
+                Button save = (Button) dialog.findViewById(R.id.label_setting_save);
+
+                dismiss.setOnClickListener(view1 -> dialog.dismiss());
+
+                save.setOnClickListener(view12 -> {
+                    if(input.getText() != null) {
+                        textViewLabel.setText(input.getText());
+                    } else {
+                        textViewLabel.setText(R.string.default_label);
+                    }
+                    dialog.dismiss();
+                });
+                dialog.setCancelable(true);
+
+                dialog.show();
+            }
+        });
 
         saveAlarmFab = findViewById(R.id.save_alarm_fab);
         saveAlarmFab.setOnClickListener(view -> saveNote());
@@ -145,7 +222,7 @@ public class AddAlarm extends AppCompatActivity {
 
         timeHour = timePicker.getCurrentHour();
         timeMinute = timePicker.getCurrentMinute();
-        tone = ringTone.getText().toString();
+        tone = textViewRingTone.getText().toString();
         vibrate = checkBoxVibrate.isChecked();
         label = textViewLabel.getText().toString();
         snoozed = false;
@@ -255,4 +332,23 @@ public class AddAlarm extends AppCompatActivity {
                 break;
         }
     }
+    ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if(result.getResultCode() == Activity.RESULT_OK) {
+                Uri uri = result.getData().getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+                String title = ringtone.getTitle(getApplicationContext());
+                if (uri != null) {
+                    tone = uri.toString();
+                    if (title != null && !title.isEmpty())
+                        textViewRingTone.setText(title);
+                } else {
+                    textViewRingTone.setText(R.string.default_label);
+                }
+
+            }
+
+        }
+    });
 }

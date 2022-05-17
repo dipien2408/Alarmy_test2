@@ -355,7 +355,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/lexend_regular"
                                 android:text="@string/default_label"
-                                android:textColor="#C1C4CC"
+                                android:textColor="@color/dayBtn"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -555,7 +555,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/label"
                             android:fontFamily="@font/lexend_regular"
-                            android:text="@string/off_label"
+                            android:text="@string/default_label"
                             android:textColor="#C1C4CC"
                             android:textSize="12sp" />
                     </LinearLayout>

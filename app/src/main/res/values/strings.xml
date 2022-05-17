@@ -10,6 +10,10 @@
     <string name="alarm_label">Tôi không nên...</string>
     <string name="loop">Lặp lại</string>
     <string name="all_day">Hằng ngày</string>
+    <string name="intent">IntentObj</string>
+    <string name="label">Nhãn</string>
+    <string name="label_hint">Vui lòng nhập nhãn</string>
+    <string name="dismiss">Hủy</string>
     <!--for day btn in add alarm-->
     <string name="sunday">CN</string>
     <string name="monday">T2</string>

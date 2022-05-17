@@ -36,9 +36,9 @@
                 android:id="@+id/alarm_ringing_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_below="@id/alarm_ringing_time"
                 android:layout_centerInParent="true"
-                android:layout_below="@id/alarm_ringing_time"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
         </RelativeLayout>
 
@@ -72,8 +72,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/dissmis_button"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:src="@drawable/dissmis_button" />
 
             <ImageView
                 android:id="@+id/alarm_ringing_clock"
